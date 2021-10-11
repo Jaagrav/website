@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    {{ if .Site.Params.devMode }}
+    <meta name="robots" content="noindex" />
+    {{ end }}
+
+    <title>
+        {{- block "title" . -}}
+        {{ if .Params._title }}{{ .Params._title }}{{ else }}{{ if .Title }}{{ .Title }}{{ else if .Params.name }}{{ .Params.name }}{{ end }}
+        · {{ .Site.Title }}{{ end }}
+        {{- end -}}
+    </title>
+
+    {{ if .IsTranslated -}}
+    {{ range .Translations -}}
+    <link rel="alternate" hreflang="{{ .Lang }}" href="{{ .Permalink }}">
+    {{ end -}}
+    {{- end }}
+    <link rel="alternate" hreflang="{{ .Lang }}" href="{{ .Permalink }}">
+
+    <link rel="preconnect" href="https://static.dacdn.de">
+    <!-- To generate the SRIs: `openssl dgst -sha384 -binary FILENAME | openssl base64 -A` -->
+    <link rel="preload" as="font" crossorigin="anonymous" integrity="sha384-tNBae8zgEksCqZQj7CBECeZFk2QtL2mxVPeHSxF75N/wvJzzmQHcZzv7F/X/fp5C" type="font/woff2" href="https://static.dacdn.de/fonts/fira-go/FiraGO-1001-Regular.woff2">
+    <link rel="preload" as="font" crossorigin="anonymous" integrity="sha384-+OpL6cf+m9YfQ7ygI08Ss1/7tIegMPGBWnHayunHLqV5SKsNylANZ4+PeiVC5SSN" type="font/woff2" href="https://static.dacdn.de/fonts/fira-go/FiraGO-1001-SemiBold.woff2">
+    <link rel="preload" as="font" crossorigin="anonymous" integrity="sha384-OweSPaeB1JE8kKcxBY0uMLQ+uMLCkQkkxItLG7y88xrf/KREX5J3LrjBXdGrrh1v" type="font/woff2" href="https://static.dacdn.de/fonts/fira-go/FiraGO-1001-Italic.woff2">
+    <link rel="preload" as="font" crossorigin="anonymous" integrity="sha384-sWa20lMbvqJHIjx/smLcYHI2mJE8aJTZ1nvZaP6APJ0D45qxe+r7+/UYGy47CuLc" type="font/woff2" href="https://static.dacdn.de/fonts/spartan-mb/SpartanMB-1005-ExtraBold.woff">
+    {{ if eq .Type "generator" -}}
+    {{- end }}
+    {{ $style := resources.Get "styles/main.scss" | toCSS (dict "enableSourceMap" .Site.Params.devMode) | postCSS (dict "config" "postcss.config.js" "noMap" true) | minify | fingerprint }}
+    {{ $style_link := $style.RelPermalink | absURL }}
+    {{ if (or (eq hugo.Environment "production") (eq hugo.Environment "staging")) }}
+        {{ $style_link = $style_link | replaceRE "\\.[^\\.]*(\\.[^\\.]*)$" "$1" }}
+    {{ end }}
+    <link rel="stylesheet" href="{{ $style_link }}" integrity="{{ $style.Data.Integrity }}">
+
+    {{ partial "head/meta.html" . }}
+    {{ partial "head/favicons.html" . }}
+    {{ block "head" . }}{{ end }}
+</head>
+
+<body>
+    <aside id="flash-messages"></aside>
+    <header id="nav-header">
+        <div id="nav-header-bg"></div>
+        <div id="header-main" class="container">
+            <a href="{{ "/" | absURL }}" title="{{ T "logo-a-title" . }}" style="position: relative;">
+                {{ with imageConfig (replace (printf "static/%s" (T "logo")) ".svg" ".png") }}
+                    <img id="logo" src="{{ T "logo" . | absURL }}" title="{{ T "logo-title" . }}" height="{{ .Height }}" width="{{ .Width }}">
+                {{ end }}
+                {{ if .Site.Params.devMode }}
+                    <span class="dev-mode-indicator" style="font-family: monospace; font-weight: bold; color: #d53f8c; position: absolute; bottom: 22px; right: -25px;">DEV</span>
+                {{ end }}
+            </a>
+            <nav id="main-nav">
+                <div id="menu-items">
+                    <a href="{{ (partial "functions/link" (dict "slug" "/company")).url }}" class="menu-link desktop-only">{{ T "header-cdb" }}</a>
+                    <a href="{{ (partial "functions/link" (dict "slug" "/blog")).url }}" class="menu-link desktop-only">{{ T "header-blog" }}</a>
+
+                    <a class="{{ if .IsHome }}button button-primary icon icon-letter {{ end }}menu-link desktop-only" href="{{ (partial "functions/link" (dict "slug" "/generator")).url }}">{{ T "header-generator" }}</a>
+                    <div class="dropdown-container">
+                        <a class="button button-secondary menu-link" href="javascript:void(0)"><span class="icon icon-menu" title="{{ T "header-open-menu" . }}"></span></a>
+                        <div class="dropdown" id="personal-menu">
+                            <div class="mobile-only">
+                                <a class="button button-primary icon icon-letter menu-link" href="{{ (partial "functions/link" (dict "slug" "/generator")).url }}" style="border-radius: 0;">{{ T "header-generator" }}</a>
+                                <a href="{{ (partial "functions/link" (dict "slug" "/company")).url }}" class="menu-link">{{ T "header-cdb" }}</a>
+                                <a href="{{ (partial "functions/link" (dict "slug" "/blog")).url }}" class="menu-link">{{ T "header-blog" }}</a>
+                            </div>
+                            <a href="{{ (partial "functions/link" (dict "slug" "/my-requests")).url }}" class="menu-link">{{ T "header-my-requests" }}</a>
+                            <a href="{{ (partial "functions/link" (dict "slug" "/id-data-controls")).url }}" class="menu-link">{{ T "header-id-data-controls" }}</a>
+                            <a href="{{ (partial "functions/link" (dict "slug" "/privacy-controls")).url }}" class="menu-link">{{ T "header-privacy-controls" }}</a>
+
+                            <div id="personal-menu-i18n-widget" class="i18n-widget-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="clearfix"></div>
+        </div>
+        {{ if .IsHome }}
+            <div id="home-hero-bg"></div>
+        {{ else }}
+            <div id="heading-bg">
+                {{ block "header-with-bg" . }}
+                    <div id="heading" class="container">
+                        <h1>{{ block "heading" . }}{{ .Title }}{{ end }}</h1>
+                    </div>
+                {{ end }}
+            </div>
+        {{ end }}
+    </header>
+
+    <div class="container">
+        {{ block "main" . }}
+        {{ end }}
+    </div>
+
+    {{ partialCached "footer" . }}
+
+    {{ partial "scripts" . }}
+    {{ block "scripts" . }}
+    {{ end }}
+</body>
+
+</html>

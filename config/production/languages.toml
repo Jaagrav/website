@@ -1,0 +1,17 @@
+[de]
+	baseURL = "https://www.datenanfragen.de/"
+
+[en]
+	baseURL = "https://www.datarequests.org/"
+
+[fr]
+	baseURL = "https://www.demandetesdonnees.fr/"
+
+[pt]
+	baseURL = "https://www.pedidodedados.org/"
+
+[es]
+	baseURL = "https://www.solicituddedatos.es/"
+
+[hr]
+	baseURL = "https://www.osobnipodaci.org/"

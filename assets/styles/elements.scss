@@ -1,0 +1,719 @@
+@import 'variables';
+
+.button {
+    padding: 11px 24px;
+    border: 2px solid $primary-color;
+    border-radius: 2px;
+    box-sizing: border-box;
+    font-size: $font-size;
+    font-family: $body-font;
+    text-decoration: none;
+    cursor: pointer;
+    appearance: none;
+    background-color: $bg-color;
+    color: $primary-color;
+    display: inline-block;
+    line-height: 1.2;
+
+    &:hover,
+    &:focus {
+        background-color: color('blue', 900);
+        color: color('gray', 200) !important;
+        border: 2px solid color('blue', 900);
+    }
+
+    &.disabled,
+    &:disabled {
+        background-color: color('gray', 400);
+        border: 2px solid color('gray', 800);
+        color: color('gray', 800) !important;
+        cursor: not-allowed;
+    }
+}
+.button-unstyled {
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+.button-full-width {
+    width: 100%;
+}
+.button-primary,
+a.button-primary {
+    background-color: $primary-color;
+    color: $bg-color !important;
+
+    &.disabled,
+    &:disabled {
+        background-color: color('gray', 400);
+        border: 2px solid color('gray', 900);
+        color: color('gray', 900) !important;
+    }
+}
+.button-secondary,
+a.button-secondary {
+    background-color: $bg-color;
+    color: $primary-color !important;
+}
+.button.icon:before {
+    margin-right: 12px;
+}
+.button-small {
+    padding: 5px 8px;
+}
+
+canvas {
+    border: 2px solid $primary-color;
+    border-radius: 2px;
+}
+
+.signature-input {
+    .canvas-blocked-overlay {
+        background-color: color('gray', 700);
+        color: color('gray', 200);
+    }
+
+    canvas[id*='signature'] {
+        user-select: none;
+        touch-action: none;
+        background-color: $bg-color;
+    }
+}
+
+// On the off chance that this might not *immediately* be obvious to everyone: Our colors are defined as HSB and run
+// through a function that converts them to HSL. Sass then (not so) helpfully converts them to hex for us.
+// Unfortunately, we are using a data URL here and a `#` in a URL is a fragment identifier. Now, most browsers
+// apparently still produce the expected result—except Firefox (see: https://codepen.io/gunnarbittersmann/pen/BoovjR). I
+// mean, good on you for adhering to the spec. But still. Come on.
+// Anyway, that is why we are URL-encoding the `#` here (inspired by: https://codepen.io/kevinweber/pen/dXWoRw).
+$required-asterisk-svg: str-replace(
+    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="9.5" width="10"><path d="M10 4.45l-.7-2.07-3.56 1.57L6.12 0H3.86l.38 3.93L.68 2.4 0 4.45l3.81.83L1.23 8.2l1.8 1.3L5 6.15 6.97 9.5l1.8-1.32-2.6-2.9z" fill="' +
+        $accent_color + '"/></svg>',
+    '#',
+    '%23'
+);
+#{$text-inputs} {
+    border: 2px solid $primary-color; /*none*/
+    border-radius: 2px;
+    padding: 7px;
+    box-sizing: border-box;
+    appearance: none;
+    color: $primary-color;
+    background-color: $bg-color;
+    font-family: $body-font;
+    font-size: $font-size - 2px;
+    cursor: auto; // Normalize value for the tests.
+
+    &.form-element {
+        width: 100%;
+    }
+
+    &:required {
+        background: $bg-color url($required-asterisk-svg) no-repeat;
+        background-position: top 8px right 5px;
+        padding-right: 20px;
+        box-shadow: none !important;
+    }
+}
+textarea.form-element {
+    max-width: 100%;
+    min-width: 100%;
+    line-height: 1.6;
+    appearance: none;
+}
+input::placeholder,
+textarea::placeholder {
+    color: color('black'); // This is dimmed down by the browser anyway.
+}
+
+.input-addon-container {
+    display: flex;
+
+    #{$text-inputs} {
+        border-right: none;
+        // TODO: This currently works for addons on the left.
+        border-radius: 2px 0 0 2px;
+    }
+
+    .input-addon {
+        flex: 1;
+        border: 2px solid $primary-color;
+        // TODO: Same here.
+        border-radius: 0 2px 2px 0;
+        background-color: $primary-color;
+        color: $bg-color;
+        padding: 7px 10px;
+    }
+}
+
+@mixin disabled-input {
+    background-color: color('gray', 400);
+    border: 2px solid color('gray', 800);
+    color: color('gray', 800) !important;
+    cursor: not-allowed;
+}
+// We can (unfortunately) neither use `:read-only` nor `:moz-read-only`, since the implementations vary wildly and tend to match way too many things.
+// Thus, always add the class `readonly` to readonly inputs.
+input.readonly,
+input:disabled {
+    @include disabled-input;
+}
+
+.box {
+    box-sizing: border-box;
+    border: 4px solid $primary-color;
+    border-radius: 2px;
+    padding: 20px;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        margin-top: 0;
+
+        &.has-margin {
+            margin-top: 20px;
+        }
+    }
+}
+.box-error {
+    border-color: $error-color;
+}
+.box-warning {
+    border-color: $warning-color;
+}
+.box-info {
+    border-color: $info-color;
+}
+.box-success {
+    border-color: $success-color;
+}
+
+.box-compact {
+    padding: 10px;
+}
+
+.select-container {
+    position: relative;
+    width: 200px;
+
+    select {
+        appearance: none; /* TODO: This is actually a little debatable, since appearance is as of now not supported in every browser (especially IE 11, Edge does though with -webkit- prefix weirdly enough). But it is not breaking, so I think it is ok this way */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        padding-right: 30px;
+        width: 100%;
+        background-color: transparent;
+    }
+
+    .icon {
+        position: absolute;
+        right: 10px;
+        top: 5px;
+        color: $primary-color;
+        z-index: -1;
+    }
+}
+
+/* Radio Buttons */
+.radio-label {
+    input.form-element {
+        display: none;
+    }
+
+    display: inline-block;
+    border: 2px solid $primary-color;
+    padding: 10px;
+    border-radius: 0;
+    background-color: $bg-color;
+    color: $primary-color;
+    border-left: none;
+    margin-bottom: 5px;
+
+    &:first-child {
+        border-radius: 2px 0 0 2px;
+        border-left: 2px solid $primary-color;
+    }
+
+    &:last-child {
+        border-radius: 0 2px 2px 0;
+    }
+
+    &.active {
+        background-color: $primary-color;
+        color: $bg-color;
+    }
+    &:hover,
+    &:focus {
+        background-color: color('blue', 900);
+        color: $bg-color;
+    }
+}
+
+/* yet another backport from chitin */
+.radio-group-vertical .radio-label {
+    display: block;
+    margin-bottom: 0;
+    border-left: 2px solid $primary-color;
+    border-bottom: 0;
+
+    padding-left: 15px;
+
+    &:first-child {
+        border-radius: 2px 2px 0 0;
+    }
+    &:last-child {
+        border-radius: 0 0 2px 2px;
+        border-bottom: 2px solid $primary-color;
+    }
+}
+
+/* Checkboxes */
+
+input[type='checkbox'].form-element {
+    border: 2px solid $primary-color;
+    appearance: none; /* TODO: This is actually a little debatable, since appearance is as of now not supported in every browser (especially IE 11, Edge does though with -webkit- prefix weirdly enough). But it is not breaking, so I think it is ok this way */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 10px;
+    margin: 0;
+    margin-right: 10px;
+    float: left;
+    cursor: auto; // Normalize value for the tests.
+
+    &:checked {
+        background: linear-gradient($primary-color, $primary-color) 50% 50% / 16px 16px;
+        background-repeat: no-repeat;
+        background-position: center center;
+    }
+}
+
+/* Adapted after: https://www.algolia.com/doc/tutorials/search-ui/autocomplete/auto-complete */
+.aa-input-container {
+    display: inline-block;
+    position: relative;
+}
+.algolia-autocomplete {
+    width: 100%;
+}
+.aa-input-search,
+input[type='search'].aa-input-search {
+    padding: 12px 28px 12px 12px;
+    width: 100%;
+    background-color: $bg-color;
+    border: 4px solid $primary-color;
+    border-radius: 2px;
+
+    // Fix search input in Webkit/Safari (see https://stackoverflow.com/a/34802612)
+    -webkit-appearance: textfield;
+    &::-webkit-search-decoration {
+        -webkit-appearance: none;
+    }
+}
+.aa-dropdown-menu {
+    background-color: $bg-color;
+    border: 1px solid color('gray', 300);
+    width: 100%;
+    box-sizing: border-box;
+}
+.aa-suggestion {
+    padding: 12px;
+    cursor: pointer;
+    & + .aa-suggestion {
+        border-top: 1px solid color('gray', 300);
+    }
+    &:last-of-type {
+        border-bottom: 1px solid color('gray', 300);
+    }
+    &:hover,
+    &:focus,
+    &.aa-cursor {
+        background-color: color('blue', 100);
+    }
+    &.aa-cursor mark {
+        background-color: #d3d3d3;
+    }
+
+    & mark {
+        background-color: #e0edf8;
+        color: inherit;
+    }
+
+    a {
+        margin: -12px;
+        padding: 12px;
+        width: 100%;
+        height: 100%;
+        color: $text-color;
+        display: inline-block;
+    }
+}
+
+/* Modal */
+/* adapted after: https://jsfiddle.net/developit/2kLkaxvd/ */
+
+.backdrop {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+
+    @extend .fade-in;
+}
+
+.modal {
+    display: block;
+
+    & > .inner {
+        position: fixed;
+        z-index: 999;
+        box-sizing: border-box;
+        left: 50%;
+        top: 50%;
+        width: 500px;
+        padding: 20px;
+        padding-top: 35px;
+        transform: translate(-50%, -50%);
+        background: $bg-color;
+        box-shadow: 0 10px 30px color('gray', 700);
+        animation: in 300ms ease forwards 1;
+        overflow-y: auto;
+        max-height: 95vh;
+
+        @media screen and (prefers-reduced-motion: reduce) {
+            animation: none;
+        }
+
+        button.close-button {
+            color: $primary-color;
+            font-size: 8px;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            cursor: pointer;
+
+            &:hover,
+            &:focus {
+                color: color('blue', 900);
+            }
+        }
+
+        .button {
+            @include mobile {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        @include mobile {
+            max-width: 90vw;
+        }
+    }
+}
+@keyframes in {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 0%) scale(0.7);
+    }
+}
+
+.modal .button-group {
+    margin-top: 20px;
+}
+
+/* Accordion */
+
+.accordion {
+    .accordion-title {
+        margin-top: 15px;
+        font-size: $font-size;
+        font-weight: bold;
+
+        .icon {
+            float: right;
+        }
+    }
+
+    .accordion-title-link {
+        color: $text-color;
+        width: 100%;
+    }
+}
+
+/* TextScroll */
+
+.textscroll {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding-left: 0;
+
+    @include mobile {
+        flex-wrap: wrap;
+    }
+
+    li {
+        display: block;
+        text-align: center;
+        flex: 1;
+        border-radius: 2px;
+
+        &.active {
+            background-color: $primary-color;
+
+            a {
+                color: $bg-color;
+            }
+        }
+
+        a {
+            font-size: 20px;
+            color: $text-color;
+            padding: 5px;
+        }
+    }
+}
+
+/* i18n */
+.i18n-button {
+    display: block;
+    width: 100%;
+    text-align: left;
+}
+
+.dropup.i18n-widget-container {
+    border: 2px solid $primary-color;
+    border-radius: 2px;
+    background: $bg-color;
+    width: 400px;
+    left: 0;
+    bottom: 100%;
+    margin-bottom: -2px;
+    padding: 10px;
+
+    @include mobile {
+        width: 100%;
+    }
+}
+.i18n-widget {
+    .select-container {
+        width: 100%;
+    }
+}
+
+#personal-menu-i18n-widget {
+    padding: 15px;
+    border-top: 2px solid $primary-color;
+}
+
+/* Dropdown and -up */
+
+.dropdown-container,
+.dropup-container {
+    position: relative;
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+        .dropdown,
+        .dropup {
+            display: block;
+            position: absolute;
+            z-index: 998;
+        }
+    }
+
+    &:hover.disabled,
+    &:focus.disabled,
+    &:focus-within.disabled {
+        .dropdown,
+        .dropup {
+            display: none;
+        }
+    }
+
+    .dropdown,
+    .dropup {
+        background-color: $bg-color;
+        border: 2px solid $primary-color;
+        border-radius: 2px;
+
+        display: none;
+    }
+}
+
+/* Flash messages */
+#flash-messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999;
+    width: 350px;
+    max-height: 90vh;
+    overflow: auto;
+
+    @include mobile {
+        width: 100%;
+        max-width: 500px;
+    }
+}
+
+.flash-message {
+    @extend .box;
+    background-color: $bg-color;
+    position: relative;
+    margin-bottom: 10px;
+    padding-right: 45px;
+
+    @extend .fade-in;
+
+    button.close-button {
+        color: $primary-color;
+        font-size: 8px;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        cursor: pointer;
+    }
+}
+
+.flash-error {
+    border-color: $error-color;
+    button.close-button {
+        color: $error-color;
+    }
+}
+.flash-warning {
+    border-color: $warning-color;
+    button.close-button {
+        color: $warning-color;
+    }
+}
+.flash-info {
+    border-color: $info-color;
+    button.close-button {
+        color: $info-color;
+    }
+}
+.flash-success {
+    border-color: $success-color;
+    button.close-button {
+        color: $success-color;
+    }
+}
+
+.top-right-humaaan,
+.top-left-humaaan {
+    height: 350px;
+    margin-top: -70px;
+
+    @include mobile {
+        display: block;
+        margin: auto !important;
+        float: none !important;
+        width: 80vw;
+        height: auto;
+    }
+}
+.top-right-humaaan {
+    float: right;
+    margin-right: -250px;
+}
+.top-left-humaaan {
+    float: left;
+    margin-left: -250px;
+}
+
+.offset-image {
+    padding: 0 20px;
+
+    @include mobile {
+        display: block;
+        margin: auto !important;
+        float: none !important;
+        max-width: 80vw;
+        height: auto;
+    }
+
+    &.offset-image-left {
+        float: left;
+        margin-left: -150px;
+    }
+    &.offset-image-right {
+        float: right;
+        margin-right: -150px;
+    }
+}
+
+/* Star Widget, adapted after https://jsfiddle.net/leaverou/CGP87/ */
+fieldset.rating {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.rating {
+    float: left;
+}
+
+/* :not(:checked) is a filter, so that browsers that don’t support :checked don’t
+   follow these rules. Every browser that supports :checked also supports :not(), so
+   it doesn’t make the test unnecessarily selective */
+.rating:not(:checked) > input {
+    display: none;
+}
+
+.rating:not(:checked) > label {
+    float: right;
+    width: 0.8em;
+    padding: 0 0.1em 0 0;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 250%;
+    margin-top: -15px;
+    color: color('gray', 400);
+
+    &.editable {
+        cursor: pointer;
+    }
+
+    &:before {
+        content: '◆ ';
+    }
+}
+
+.rating > input:checked ~ label {
+    color: $primary-color;
+}
+
+.rating:not(:checked) > label.editable:hover,
+.rating:not(:checked) > label.editable:focus,
+.rating:not(:checked) > label.editable:hover ~ label,
+.rating:not(:checked) > label.editable:focus ~ label {
+    color: color('blue', 400);
+}
+
+.rating > input:checked + label.editable:hover,
+.rating > input:checked + label.editable:hover ~ label,
+.rating > input:checked ~ label.editable:hover,
+.rating > input:checked ~ label.editable:hover ~ label,
+.rating > label.editable:hover ~ input:checked ~ label,
+.rating > label.editable:focus ~ input:checked ~ label {
+    color: color('blue', 900);
+}
+
+.rating > label.editable:active {
+    position: relative;
+    top: 2px;
+    left: 2px;
+}

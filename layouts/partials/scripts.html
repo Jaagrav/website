@@ -1,0 +1,85 @@
+{{ partialCached "supported-countries" . }}
+<script>
+    const LOCALE = {{ .Site.Language.Lang }};
+    // (p)react needs to be notified on changes of `country`, so we use a getter and setter (added in `general.js`. Not exactly pretty but oh well. See: https://stackoverflow.com/a/37403125
+    // I briefly considered abstracting this away for new properties in the future but decided against it. Doing something like this *should* hurt and require extra ugly code.
+    var globals = {
+        _country_listeners: [],
+        addCountryListener: function(listener) { this._country_listeners.push(listener); }
+    };
+    const SUPPORTED_LANGUAGES = {
+        {{- if .IsTranslated -}}
+            {{- range .Translations -}}
+                "{{ .Lang }}": "{{ .Permalink }}",
+            {{- end -}}
+        {{- end -}}
+    };
+
+    const COUNTRIES_WITH_SUGGESTED_COMPANIES = ['de', 'gb'];
+    const BASE_URL = {{ "/" | absURL }};
+</script>
+<script src="{{ "js/runtime.gen.js" | absURL }}"></script>
+<script src="{{ "js/vendors.bundle.gen.js" | absURL }}"></script>
+<script src="{{ "js/commons.bundle.gen.js" | absURL }}"></script>
+<script src="{{ "js/translations-requests.gen.js" | absURL }}"></script>
+<script src="{{ (printf "js/translations-%s.gen.js" .Site.Language.Lang) | absURL }}"></script>
+<script src="{{ "js/error-handler.bundle.gen.js" | absURL }}"></script>
+<script src="{{ "js/general.bundle.gen.js" | absURL }}"></script>
+
+{{ if eq .Type "generator" }}
+<script src="{{ "js/generator.bundle.gen.js" | absURL }}"></script>
+{{ end }}
+
+{{ if or (eq .Type "company") (eq .Type "categories") }}
+<script src="{{ "js/company-list.bundle.gen.js" | absURL }}"></script>
+{{ end }}
+
+{{ if eq .Type "my-requests" }}
+<script src="{{ "js/my-requests.bundle.gen.js" | absURL }}"></script>
+<script>renderMyRequestsWidget();</script>
+{{ end }}
+
+{{ if eq .Type "privacy-controls" }}
+<script src="{{ "js/privacy-controls.bundle.gen.js" | absURL }}"></script>
+{{ end }}
+
+{{ if eq .Type "id-data-controls" }}
+<script src="{{ "js/id-data-controls.bundle.gen.js" | absURL }}"></script>
+{{ end }}
+
+{{ if eq .Type "suggest" }}
+<script src="{{ "js/suggest-edit.bundle.gen.js" | absURL }}"></script>
+{{ end }}
+
+{{ if eq .Type "supervisory-authorities" }}
+<script src="{{ "js/sva-finder.bundle.gen.js" | absURL }}"></script>
+<script>renderSvaFinder();</script>
+{{ end }}
+
+{{ if eq .Type "act" }}
+<script src="{{ "js/act-widget.bundle.gen.js" | absURL }}"></script>
+{{ end }}
+
+{{ if eq .Type "donate" }}
+<script src="{{ "js/donation-widget.bundle.gen.js" | absURL }}"></script>
+<script>renderDonationWidget();</script>
+{{ end }}
+
+{{ if .IsHome }}
+<script src="{{ "js/home.bundle.gen.js" | absURL }}"></script>
+{{ end }}
+
+{{/* TODO: Do this in the js build via hugo pipes */}}
+{{ if eq .Type "donate" }}
+{{ $loader := resources.Get "styles/loader.scss" | toCSS (dict "enableSourceMap" .Site.Params.devMode) | postCSS (dict "config" "postcss.config.js" "noMap" true) | minify | fingerprint }}
+{{ $link := $loader.RelPermalink | absURL }}
+{{ if (or (eq hugo.Environment "production") (eq hugo.Environment "staging")) }}
+{{ $link = $link | replaceRE "\\.[^\\.]*(\\.[^\\.]*)$" "$1" }}
+{{ end }}
+<link rel="stylesheet" href="{{ $link }}" integrity="{{ $loader.Data.Integrity }}">
+{{ end }}
+
+{{ if .Site.Params.devMode }}
+<script>window.hugoDevMode = true;</script>
+<script src="{{ "js/test-interface.bundle.gen.js" | absURL }}"></script>
+{{ end }}

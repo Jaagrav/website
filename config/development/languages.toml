@@ -1,0 +1,17 @@
+[de]
+	baseURL = "http://datenanfragen.test"
+
+[en]
+	baseURL = "http://datenanfragen.test"
+
+[fr]
+	baseURL = "http://datenanfragen.test"
+
+[pt]
+	baseURL = "http://datenanfragen.test"
+
+[es]
+	baseURL = "http://datenanfragen.test"
+
+[hr]
+	baseURL = "http://datenanfragen.test"

@@ -1,0 +1,48 @@
+[authors.baltpeter]
+byline = "<a xmlns:cc='http://creativecommons.org/ns#' href='https://benjamin-altpeter.de/' property='cc:attributionName' rel='cc:attributionURL'>Benjamin Altpeter</a>"
+short_name = "Benni"
+
+# Sorry but there was no way to preserve the capitalization. :(
+[authors.zner0l]
+byline = "<a xmlns:cc='http://creativecommons.org/ns#' href='https://lorenz-sieben.com/' property='cc:attributionName' rel='cc:attributionURL'>Lorenz Sieben</a>"
+short_name = "Lorenz"
+
+[authors.xeluna]
+byline = "<a xmlns:cc='http://creativecommons.org/ns#' href='https://github.com/xeluna' property='cc:attributionName' rel='cc:attributionURL'>WL</a>"
+short_name = "WL"
+
+[authors.nishantwrp]
+byline = "<a xmlns:cc='http://creativecommons.org/ns#' href='https://github.com/nishantwrp' property='cc:attributionName' rel='cc:attributionURL'>Nishant Mittal</a>"
+short_name = "nishantwrp"
+
+[authors.nadjarode]
+byline = "Nadja Rode (<a href=\"http://www.hlci.de/\">Humboldt Law Clinic Internetrecht</a>, Berlin)"
+short_name = "Nadja"
+
+[authors.steffengrundke]
+byline = "Steffen Grundke (<a href=\"http://www.hlci.de/\">Humboldt Law Clinic Internetrecht</a>, Berlin)"
+short_name = "Steffen"
+
+[authors.lars]
+byline = "Lars (<a href=\"http://www.hlci.de/\">Humboldt Law Clinic Internetrecht</a>, Berlin)"
+short_name = "Lars"
+
+[authors.anikarini]
+byline = "Ani Karini Muniz Schiebert (<a href=\"http://www.hlci.de/\">Humboldt Law Clinic Internetrecht</a>, Berlin)"
+short_name = "Ani Karini"
+
+[authors.andreas_bampounis]
+byline = "Andreas Bampounis (<a href=\"http://www.hlci.de/\">Humboldt Law Clinic Internetrecht</a>, Berlin)"
+short_name = "Andreas Bampounis"
+
+[authors.eliottha]
+byline = "<a href='https://eliott.be' property='cc:attributionName' rel='cc:attributionURL'>Eliott Hauteclair</a>"
+short_name = "Eliott H"
+
+[authors.malte]
+byline = "<a xmlns:cc='http://creativecommons.org/ns#' href='https://matrix.to/#/@mal-tee:matrix.org' property='cc:attributionName' rel='cc:attributionURL'>Malte Wessels</a>"
+short_name = "Malte"
+
+[authors.berni]
+byline = "<span xmlns:cc='http://creativecommons.org/ns#' property='cc:attributionName' >Bernhard Seckinger</span>"
+short_name = "Berni"

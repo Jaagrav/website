@@ -1,0 +1,26 @@
+<!--
+Insert an image, either from a named page resource or a URL.
+If the image is given via the `name` instead of the `url`, the image is automatically made responsive for use in blog
+posts and other content pages.
+
+Use it like this (remove the `.`):
+    `{.{< img name="[name]" … >}}`
+
+With the following parameters:
+    - `[name]`: The name of the image resource to insert. If this is specified, `[url]` cannot be used.
+    - `[url]`: The URL of the image to insert. If this is specified, `[name]` cannot be used.
+    - `[class]`: A CSS class to apply to the enclosing `<figure>`.
+    - `[alt]`: The text to set for the `alt` and `title` attributes of the image. Falls back to `[caption]` if not set.
+    - `[caption]`: The caption to display underneath the image.
+    - `[link]`: The URL that the image links to.
+    - `[loading]`: Whether to lazy-load the image (`eager` to load the image immediately, `lazy` to defer loading).
+                   Defaults to `lazy`.
+
+Only either `[name]` or `[url]` are required, all other commands are optional.
+
+For a description of the `[name]` parameter, see the documentation for the `imgURL` shortcode.
+
+Inspired by: https://gohugo.io/templates/shortcode-templates/#single-named-example-image
+-->
+
+{{ partial "img" (dict "page" .Page "name" (.Get "name") "url" (.Get "url") "class" (.Get "class") "alt" (.Get "alt") "caption" (.Get "caption") "link" (.Get "link") "loading" (.Get "loading")) }}

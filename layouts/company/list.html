@@ -1,0 +1,84 @@
+{{ define "title" }}
+{{ T "cdb-title" }} &middot; {{ .Site.Title }}
+{{ end }}
+
+{{ define "heading" }}
+{{ T "cdb-title" }}
+{{ end }}
+
+{{ define "main" }}
+<main>
+    <div id="company-list"></div>
+
+    <!-- All of this only to make case-insensitive sorting possible. I hate you hugo -->
+    {{ $pages := (.Data.Pages.ByParam "name")}}
+    {{ range $pages }}
+        {{/*
+             Normalize company name for sorting by uppercasing and translating accented characters to equivalent Latin
+             alphabet characters.
+        */}}
+        {{ $clean_name := replaceRE "[ÅÁÀÂÄÃÅÆΆ]" "A" (upper .Params.name) }}
+        {{ $clean_name := replaceRE "[B̌B́Β]" "B" $clean_name }}
+        {{ $clean_name := replaceRE "[ÇČĆ̣Ḉ]" "C" $clean_name }}
+        {{ $clean_name := replaceRE "[ĎÐD́]" "D" $clean_name }}
+        {{ $clean_name := replaceRE "[ÉÈÊËĚÊ̌ΕĖ́Ę́É̩Έ]" "E" $clean_name }}
+        {{ $clean_name := replaceRE "[F̌F́]" "F" $clean_name }}
+        {{ $clean_name := replaceRE "[ǦǴ]" "G" $clean_name }}
+        {{ $clean_name := replaceRE "[ȞH́ΉΗ]" "H" $clean_name }}
+        {{ $clean_name := replaceRE "[ÌÍÎÏΊ]" "I" $clean_name }}
+        {{ $clean_name := replaceRE "[J̌J́]" "J" $clean_name }}
+        {{ $clean_name := replaceRE "[ǨḰΚ]" "K" $clean_name }}
+        {{ $clean_name := replaceRE "[Ľ]" "L" $clean_name }}
+        {{ $clean_name := replaceRE "[M̌ḾΜ]" "M" $clean_name }}
+        {{ $clean_name := replaceRE "[ÑŃΝ]" "N" $clean_name }}
+        {{ $clean_name := replaceRE "[ÒÓÔÕÖØΌΟ]" "O" $clean_name }}
+        {{ $clean_name := replaceRE "[P̌ṔΡ]" "P" $clean_name }}
+        {{ $clean_name := replaceRE "[Q̌Q́]" "Q" $clean_name }}
+        {{ $clean_name := replaceRE "[ŘŘ̩Ŕ]" "R" $clean_name }}
+        {{ $clean_name := replaceRE "[ŚṠŜŠŞ]" "S" $clean_name }}
+        {{ $clean_name := replaceRE "[ŤT́Τ]" "T" $clean_name }}
+        {{ $clean_name := replaceRE "[ŬÙÚÛÜ]" "U" $clean_name }}
+        {{ $clean_name := replaceRE "[V̌V́]" "V" $clean_name }}
+        {{ $clean_name := replaceRE "[W̌Ẃ]" "W" $clean_name }}
+        {{ $clean_name := replaceRE "[X̌X́Χ]" "X" $clean_name }}
+        {{ $clean_name := replaceRE "[ÝŸȲ́Ύ]" "Y" $clean_name }}
+        {{ $clean_name := replaceRE "[ŽŹΖ]" "Z" $clean_name }}
+        {{/*
+            Remove specific problem and special characters out; Note: \x200b is the 'Zero Width Space' character.
+        */}}
+        {{ $clean_name := replaceRE "[\\x{200b}„“\"]" "" $clean_name }}
+        {{/*
+            Non-alphanum starting characters are being modified with a colon prefix, this will cause names with
+            other characters (not handled above) to sort in the number section after 9.
+        */}}
+        {{ $clean_name := replaceRE "^([^[[:alnum:]]])" ":$1" $clean_name }}
+        {{ $clean_entry := dict "first_letter" (substr $clean_name 0 1) "clean_name" $clean_name "slug" .Params.slug }}
+        {{ $.Scratch.Add "clean_companies" (slice $clean_entry) }}
+    {{ end }}
+
+    <div id="company-overview" class="narrow-page">
+        <!-- TODO: Only include those companies that are relevant to the user's selected country. -->
+        <!-- TODO: Ideally, these would be sorted by their relevance but we need #40 for that. -->
+        {{ .Scratch.Set "letter" " " }}
+        {{ .Scratch.Set "numbers_done" false }}
+        {{ .Scratch.Set "first_entry" true }}
+        {{ range $clean_company := sort ($.Scratch.Get "clean_companies") ".clean_name" }}
+            {{ if (in "0123456789:" $clean_company.first_letter) }}
+                {{ if (not ($.Scratch.Get "numbers_done")) }}
+                    {{ $.Scratch.Set "numbers_done" true }}
+                    {{ if not ($.Scratch.Get "first_entry") }}</div>{{ end }}
+                    <div id="numbers-container" class="sorting-container"><a class="letter-anchor" href="#numbers"><h2>#</h2></a><a class="stickyproof-anchor" name="numbers"></a>
+                    {{ $.Scratch.Set "first_entry" false }}
+                {{ end }}
+            {{ else if lt ($.Scratch.Get "letter") $clean_company.first_letter }}
+                {{ $.Scratch.Set "letter" $clean_company.first_letter }}
+                {{ if not ($.Scratch.Get "first_entry") }}</div>{{ end }}
+                <div id="{{ $.Scratch.Get "letter" }}-container" class="sorting-container"><a class="letter-anchor"  href="#{{ $.Scratch.Get "letter" }}"><h2>{{ $.Scratch.Get "letter" }}</h2></a><a class="stickyproof-anchor" name="{{ $.Scratch.Get "letter" }}"></a>
+                {{ $.Scratch.Set "first_entry" false }}
+            {{ end }}
+            {{ partial "summary-company.html" ($.Site.GetPage (printf "company/%s" $clean_company.slug)) }}
+        {{ end }}
+        {{ if gt (len (.Scratch.Get "clean_companies")) 0}}</div>{{ end }}
+    </div>
+</main>
+{{ end }}
